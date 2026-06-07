@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUMAS | Student Course Registration & Result Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-teal-700 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium shadow-inner">
+        <i class="fa-solid :fa-bullhorn mr-2 animate-pulse"></i> 
+        2025/2026 First Semester Course Registration is now **OPEN**. Deadline: June 15, 2026.
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo Section -->
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-blue-700 to-teal-600 text-white p-2.5 rounded-xl shadow-md">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-bold tracking-tight text-blue-900 block">SUMAS</span>
+                    <span class="text-xs uppercase tracking-wider text-teal-600 font-semibold block -mt-1">Portal Hub</span>
+                </div>
+            </div>
+            
+            <!-- Quick Support Link -->
+            <div class="hidden md:flex items-center space-x-2 text-sm text-slate-500">
+                <i class="fa-solid fa-headset text-teal-600"></i>
+                <span>Support: <a href="mailto:support@sumas.edu.ng" class="hover:text-blue-700 font-medium transition">support@sumas.edu.ng</a></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-blue-50/50">
+        <div class="max-w-5xl w-full">
+            
+            <!-- Welcome Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-3xl sm:text-4xl font-extrabold text-blue-950 tracking-tight">
+                    Enugu State University of Medical and Applied Sciences
+                </h1>
+                <p class="mt-3 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
+                    Welcome to the central academic portal. Access your courses, review examination grades, and manage your academic profile seamlessly.
+                </p>
+            </div>
+
+            <!-- Two-Column Action Cards -->
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- Card 1: Course Registration -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
+                    <div>
+                        <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-700 mb-6 group-hover:bg-blue-700 group-hover:text-white transition-all duration-300">
+                            <i class="fa-solid fa-book-bookmark text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">Course Registration</h2>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            Enroll in your faculty and departmental courses for the current semester. Generate, view, and print your official course registration slip.
+                        </p>
+                        
+                        <!-- Status Badge -->
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 mb-6">
+                            <span class="w-2 h-2 mr-2 bg-emerald-500 rounded-full animate-ping"></span>
+                            Active / Open
+                        </div>
+                    </div>
+                    
+                    <a href="#login" class="w-full text-center bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 shadow-lg shadow-blue-700/20">
+                        <span>Proceed to Register</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+
+                <!-- Card 2: Result Checker -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 group">
+                    <div>
+                        <div class="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center text-teal-700 mb-6 group-hover:bg-teal-600 group-hover:text-white transition-all duration-300">
+                            <i class="fa-solid fa-file-invoice text-2xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3">Result Checker</h2>
+                        <p class="text-slate-600 leading-relaxed mb-6">
+                            Securely view your semester examination results, grade points, and track your cumulative grade point average (CGPA) performance.
+                        </p>
+                        
+                        <!-- Status Badge -->
+                        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-6">
+                            <i class="fa-solid fa-lock mr-1.5 text-blue-600"></i> Secure Access
+                        </div>
+                    </div>
+                    
+                    <a href="#login" class="w-full text-center bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center space-x-2 shadow-lg shadow-teal-600/20">
+                        <span>Check Your Results</span>
+                        <i class="fa-solid fa-arrow-right text-sm"></i>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Portal Notice Board / Guidelines -->
+            <div class="mt-16 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm max-w-4xl mx-auto">
+                <h3 class="text-lg font-bold text-blue-950 mb-4 flex items-center">
+                    <i class="fa-solid fa-circle-info text-teal-600 mr-2.5 text-xl"></i>
+                    Important Portal Guidelines
+                </h3>
+                <ul class="space-y-3 text-sm text-slate-600">
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 flex-shrink-0"></i>
+                        <span>Ensure your school fees payment is cleared for the session before attempting course registration.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 flex-shrink-0"></i>
+                        <span>Double-check elective course codes with your Departmental Staff Adviser prior to final submission.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa-solid fa-check text-emerald-500 mt-1 mr-3 flex-shrink-0"></i>
+                        <span>Keep your login credentials confidential. Log out completely if accessing the portal from a public cyber café.</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-slate-400 py-8 px-4 sm:px-6 lg:px-8 border-t border-blue-900 text-center text-xs sm:text-sm">
+        <div class="max-w-7xl mx-auto space-y-3">
+            <p>&copy; 2026 Enugu State University of Medical and Applied Sciences (SUMAS). All Rights Reserved.</p>
+            <p class="text-slate-500">
+                Designed & Powered by <span class="text-teal-400 font-medium">SUMAS ICT Directorate</span>
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Last Registered Course Details</h4>
+        </div>
+        <div class="card-body">
+            {% if course %}
+                <p><strong>Course Title:</strong> {{ course.course_title }}</p>
+                <p><strong>Course Code:</strong> {{ course.course_code }}</p>
+                <p><strong>Level:</strong> {{ course.level }} Level</p>
+            {% else %}
+                <p>No course data found.</p>
+            {% endif %}
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

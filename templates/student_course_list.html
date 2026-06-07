@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Registration Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-blue-800 p-4 shadow-lg mb-8">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <span class="text-white text-xl font-bold">Student Portal</span>
+            <div class="space-x-4">
+                <a href="{{ url_for('dashboard') }}" class="text-blue-100 hover:text-white transition">Dashboard</a>
+                <a href="#" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-500 transition">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4">
+        <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Course Search & Registration</h2>
+            
+            <form action="/student/search_courses" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gray-50 p-4 rounded-lg">
+                <select name="session" class="border p-2 rounded w-full shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    <option value="">Select Session</option>
+                    {% for s in sessions %}
+                        <option value="{{ s }}" {% if s == selected_session %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="level" class="border p-2 rounded w-full shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    <option value="">Select Level</option>
+                    {% for l in levels %}
+                        <option value="{{ l }}" {% if l|string == selected_level %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
+
+                <select name="semester" class="border p-2 rounded w-full shadow-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                    <option value="">Select Semester</option>
+                    {% for sem in semesters %}
+                        <option value="{{ sem }}" {% if sem|string == selected_semester %}selected{% endif %}>{{ sem }}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded shadow-md hover:bg-blue-700 transition font-medium">Search Courses</button>
+            </form>
+
+            <hr class="mb-8">
+
+            <form action="/student/register_courses" method="POST">
+                {% if courses %}
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700">Available Courses</h3>
+                    <div id="unit-counter" class="bg-blue-100 text-blue-800 px-6 py-2 rounded-full font-bold shadow-inner">
+                        Total Units: <span id="current-units">0</span>/24
+                    </div>
+                </div>
+
+                <div class="overflow-hidden rounded-lg border border-gray-200">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+                            <tr>
+                                <th class="p-4">Select</th>
+                                <th class="p-4">Code</th>
+                                <th class="p-4">Title</th>
+                                <th class="p-4">Unit Load</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for course in courses %}
+                            <tr class="hover:bg-blue-50 transition">
+                                <td class="p-4 text-center">
+                                    <input type="checkbox" name="course_ids" value="{{ course.id }}" data-units="{{ course.unit_load }}" class="course-checkbox w-5 h-5 accent-blue-600 cursor-pointer">
+                                </td>
+                                <td class="p-4 font-mono font-medium text-gray-700">{{ course.course_code }}</td>
+                                <td class="p-4 text-gray-600">{{ course.course_title }}</td>
+                                <td class="p-4 text-gray-600">{{ course.unit_load }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="submit" class="mt-8 w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition shadow-lg hover:shadow-xl">
+                    Register Selected Courses
+                </button>
+                {% else %}
+                <div class="text-center py-12">
+                    <p class="text-gray-400 italic">Please select criteria above to display available courses.</p>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const checkboxes = document.querySelectorAll('.course-checkbox');
+        const unitDisplay = document.getElementById('current-units');
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                let total = 0;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) total += parseInt(cb.getAttribute('data-units'));
+                });
+
+                if (total > 24) {
+                    alert("⚠️ Registration limit reached: Maximum 24 units allowed.");
+                    checkbox.checked = false;
+                    total -= parseInt(checkbox.getAttribute('data-units'));
+                }
+
+                unitDisplay.innerText = total;
+                unitDisplay.parentElement.className = total > 20 ? 
+                    "bg-red-100 text-red-800 px-6 py-2 rounded-full font-bold shadow-inner" : 
+                    "bg-blue-100 text-blue-800 px-6 py-2 rounded-full font-bold shadow-inner";
+            });
+        });
+    </script>
+</body>
+</html>
+
+

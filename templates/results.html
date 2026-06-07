@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Results</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        
+        /* Print Header Styling */
+        .print-header { display: none; text-align: center; margin-bottom: 20px; }
+        .print-header img { width: 100px; display: block; margin: 0 auto; }
+        
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #333; color: white; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        
+        /* Print Specifics */
+        @media print {
+            .no-print { display: none; }
+            .print-header { display: block; }
+            body { background: white; }
+            table { width: 100%; }
+            table th { background-color: #333 !important; color: white !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="print-header">
+        <img src="https://path-to-your-university-logo.png" alt="SUMAS Logo">
+        <h1>SUMAS University</h1>
+        <p>Student Academic Results Transcript</p>
+    </div>
+
+    <h1 class="no-print">All Student Results</h1>
+
+    <div class="controls no-print">
+        <input type="text" id="searchInput" placeholder="Search by name, reg number, or course code..." onkeyup="filterTable()" style="padding: 8px; width: 300px;">
+        <button onclick="window.print()" style="padding: 8px 16px;">Print Results</button>
+    </div>
+
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Reg Number</th>
+                <th>Course Code</th>
+                <th>Total Score</th>
+                <th>Grade</th>
+                <th>Uploaded At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.student_name }}</td>
+                <td>{{ result.reg_number }}</td>
+                <td>{{ result.course_code }}</td>
+                <td>{{ result.total_score }}</td>
+                <td>{{ result.grade }}</td>
+                <td>{{ result.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("resultsTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                // Accessing columns: 0=Name, 1=Reg, 2=Course Code
+                const nameCell = tr[i].getElementsByTagName("td")[0];
+                const regCell = tr[i].getElementsByTagName("td")[1];
+                const courseCell = tr[i].getElementsByTagName("td")[2];
+                
+                if (nameCell || regCell || courseCell) {
+                    const textValue = (nameCell.textContent || nameCell.innerText) + " " + 
+                                      (regCell.textContent || regCell.innerText) + " " + 
+                                      (courseCell.textContent || courseCell.innerText);
+                    
+                    tr[i].style.display = textValue.toLowerCase().indexOf(filter) > -1 ? "" : "none";
+                }
+            }
+        }
+    </script>
+</body>
+</html>

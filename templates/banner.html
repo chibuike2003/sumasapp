@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aura Skills Corporate Presentation Banner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        /* High-Definition Master Canvas (1200x630 Landscape Card Standard) */
+        .marketing-card {
+            width: 1200px;
+            height: 630px;
+            background: #030306;
+            /* Cyber Tech Grid and Complex Radial Lighting Gradients */
+            background-image: 
+                radial-gradient(circle at 85% 20%, rgba(66, 133, 244, 0.22) 0%, rgba(3,3,6,0) 50%),
+                radial-gradient(circle at 15% 85%, rgba(155, 114, 203, 0.15) 0%, rgba(3,3,6,0) 55%),
+                linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 42px 42px, 42px 42px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 95px;
+        }
+
+        /* Abstract Vertical Lighting Line Splitter */
+        .ambient-line {
+            position: absolute;
+            top: 0; left: 28%; width: 1px; height: 100%;
+            background: linear-gradient(to bottom, rgba(66,133,244,0), rgba(66,133,244,0.15), rgba(66,133,244,0));
+        }
+
+        /* Value Communication Content Block */
+        .content-engine {
+            max-width: 560px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(66, 133, 244, 0.06);
+            border: 1px solid rgba(66, 133, 244, 0.25);
+            padding: 6px 14px;
+            border-radius: 50px;
+            color: #5c9aff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+        }
+
+        .content-engine h1 {
+            color: #ffffff;
+            font-size: 3.4rem;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+
+        .content-engine h1 span {
+            background: linear-gradient(135deg, #4285f4 20%, #9b72cb 80%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content-engine p {
+            color: #a6a9b0;
+            font-size: 1.1rem;
+            line-height: 1.65;
+            margin-bottom: 35px;
+        }
+
+        .prop-matrix {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 45px;
+        }
+
+        .matrix-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f1f1f5;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.03);
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .matrix-badge i { color: #FFD700; }
+
+        .cta-action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #0044cc 0%, #001a4d 100%);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0, 68, 204, 0.35);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Right Side Application Dashboard Simulator */
+        .dashboard-mockup-frame {
+            position: relative;
+            width: 430px;
+            height: 480px;
+            background: rgba(11, 11, 15, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            z-index: 5;
+            padding: 25px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.85);
+        }
+
+        .frame-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .window-dots { display: flex; gap: 6px; }
+        .window-dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+        .window-dot.active { background: #00ff88; }
+
+        .mock-video-canvas {
+            width: 100%;
+            height: 195px;
+            background: linear-gradient(135deg, #020205 0%, #0d0d14 100%);
+            border-radius: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.04);
+            position: relative;
+        }
+
+        .mock-video-canvas i {
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        .multitask-indicator {
+            position: absolute; top: 12px; right: 12px;
+            background: rgba(0, 255, 136, 0.1); color: #00ff88;
+            padding: 4px 10px; border-radius: 50px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .pulse-core-node { width: 6px; height: 6px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; }
+
+        .mock-ai-assistant-panel {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(66, 133, 244, 0.25);
+        }
+
+        .ai-tutor-label {
+            display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 12px;
+        }
+        .ai-glow-avatar {
+            width: 18px; height: 18px; background: linear-gradient(90deg, #4285f4, #9b72cb); border-radius: 50%;
+        }
+
+        .skeleton-line { height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 8px; }
+        .skeleton-line.w80 { width: 80%; }
+        .skeleton-line.w50 { width: 50%; margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="marketing-card">
+        <div class="ambient-line"></div>
+        
+        <!-- Value Message Pillar -->
+        <div class="content-engine">
+            <div class="category-pill">
+                <i class="fas fa-sparkles"></i> The Future of Learning
+            </div>
+            <h1>Smart Classrooms.<br>Driven by <span>Aura AI</span>.</h1>
+            <p>Step inside an adaptive educational ecosystem engineered for deep technical excellence. Stream custom instructional blueprints uninterrupted, code inside persistent sandboxed workspaces, and collaborate with a 24/7 personal AI tutor matched explicitly to your pace.</p>
+            
+            <div class="prop-matrix">
+                <div class="matrix-badge"><i class="fas fa-video"></i> Persistent Stream</div>
+                <div class="matrix-badge"><i class="fas fa-terminal"></i> Sandbox Labs</div>
+                <div class="matrix-badge"><i class="fas fa-brain"></i> Aura AI Guide</div>
+            </div>
+
+            <a href="#" class="cta-action-link">Explore Aura Skills <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <!-- Interactive Core Application Mockup Presentation -->
+        <div class="dashboard-mockup-frame">
+            <div class="frame-top">
+                <div class="window-dots">
+                    <div class="window-dot"></div>
+                    <div class="window-dot"></div>
+                    <div class="window-dot active"></div>
+                </div>
+                <span style="font-size: 0.7rem; color: #8a8d93; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Aura Environment Active</span>
+            </div>
+            
+            <div class="mock-video-canvas">
+                <div class="multitask-indicator"><div class="pulse-core-node"></div>PIP ACTIVE</div>
+                <i class="fas fa-play-circle"></i>
+            </div>
+            
+            <div class="mock-ai-assistant-panel">
+                <div class="ai-tutor-label">
+                    <div class="ai-glow-avatar"></div>
+                    <span>Aura Intelligent Core</span>
+                </div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line w80"></div>
+                <div class="skeleton-line w50"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

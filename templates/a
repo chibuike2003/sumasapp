@@ -1,0 +1,271 @@
+to calculate cgpa is total grade point + total unit load
+
+to calculate gp is course unit load * grade score
+
+to calculate the cumulative is
+
+first semester gradepoint + second semester gradepoint +first semester unit load +second semester unit load
+
+create a route for this
+
+
+
+class AcademicScope(db.Model):
+
+    __tablename__ = 'academic_scopes'
+
+
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), unique=True, nullable=False)
+
+    faculty = db.Column(db.String(100), nullable=False)
+
+    department = db.Column(db.String(100), nullable=False)
+
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+
+
+
+    # ADD THIS: This defines the back_populates target
+
+    student = db.relationship('Student', back_populates='academic_scope')
+
+
+
+
+
+class Admin(db.Model):
+
+    __tablename__ = 'admins'
+
+    
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(150), nullable=False)
+
+    email = db.Column(db.String(150), unique=True, nullable=False, index=True)
+
+    department = db.Column(db.String(100), nullable=False)
+
+    password_hash = db.Column(db.String(256), nullable=False)
+
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+
+
+    def set_password(self, password):
+
+        self.password_hash = generate_password_hash(password, method='scrypt')
+
+
+
+    def check_password(self, password):
+
+        return check_password_hash(self.password_hash, password)
+
+
+
+
+
+
+
+class Course(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    session_year = db.Column(db.String(20), nullable=False)
+
+    level = db.Column(db.Integer, nullable=False)
+
+    semester = db.Column(db.String(20), nullable=False)
+
+    faculty = db.Column(db.String(100), nullable=False)
+
+    department = db.Column(db.String(100), nullable=False)
+
+    course_code = db.Column(db.String(20), unique=True, nullable=False)
+
+    course_title = db.Column(db.String(200), nullable=False)
+
+    unit_load = db.Column(db.Integer, nullable=False)
+
+
+
+    def __repr__(self):
+
+        return f'<Course {self.course_code}>'
+
+
+
+class Registration(db.Model):
+
+    __tablename__ = 'registration'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    
+
+    # Use the actual table names defined in the other models
+
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False)
+
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+
+    
+
+    # Define the relationships
+
+    # The first argument is the Class Name, not the table name
+
+    course = db.relationship('Course', backref='registrations')
+
+    student = db.relationship('Student', backref='registrations')
+
+
+
+class Lecturer(db.Model):
+
+    __tablename__ = 'lecturers'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    name = db.Column(db.String(100), nullable=False)
+
+    email = db.Column(db.String(100), unique=True, nullable=False)
+
+    password = db.Column(db.String(255), nullable=False)
+
+    department = db.Column(db.String(100), nullable=False)
+
+    
+
+    # Relationships
+
+    results = db.relationship('Result', back_populates='lecturer', cascade="all, delete-orphan")
+
+    
+
+    # Link to LecturerCourse
+
+    courses = db.relationship('LecturerCourse', back_populates='lecturer', cascade="all, delete-orphan")
+
+
+
+class LecturerCourse(db.Model):
+
+    __tablename__ = 'lecturer_courses'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    lecturer_id = db.Column(db.Integer, db.ForeignKey('lecturers.id'), nullable=False)
+
+    # ADD THIS: Link directly to the course by ID
+
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+
+    
+
+    # Relationships
+
+    lecturer = db.relationship('Lecturer', back_populates='courses')
+
+    course = db.relationship('Course', backref='lecturer_assignments')
+
+
+
+
+
+class Student(db.Model):
+
+    __tablename__ = 'students'
+
+    
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    reg_number = db.Column(db.String(50), unique=True, nullable=False, index=True)
+
+    name = db.Column(db.String(100), nullable=False)
+
+    email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    
+
+    # Relationships
+
+    academic_scope = db.relationship('AcademicScope', back_populates='student', uselist=False, cascade="all, delete-orphan")
+
+    results = db.relationship('Result', back_populates='student', lazy='dynamic', cascade="all, delete-orphan")
+
+    academic_scope = db.relationship('AcademicScope', back_populates='student', uselist=False, cascade="all, delete-orphan")  
+
+    def __repr__(self):
+
+        return f"<Student {self.reg_number}>"
+
+
+
+class Result(db.Model):
+
+    __tablename__ = 'results'
+
+    
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    lecturer_id = db.Column(db.Integer, db.ForeignKey('lecturers.id'), nullable=False)
+
+    student_id = db.Column(db.Integer, db.ForeignKey('students.id'), nullable=False) 
+
+    
+
+    # Historical data to keep records if student profile changes
+
+    student_name = db.Column(db.String(100), nullable=False)
+
+    reg_number = db.Column(db.String(50), nullable=False)
+
+    
+
+    course_code = db.Column(db.String(20), nullable=False)
+
+    course_title = db.Column(db.String(150), nullable=False)
+
+    session_written = db.Column(db.String(50), nullable=False)
+
+    year = db.Column(db.String(20), nullable=False)
+
+    semester = db.Column(db.String(20), nullable=False)
+
+    
+
+    ca_score = db.Column(db.Float, nullable=False)
+
+    exam_score = db.Column(db.Float, nullable=False)
+
+    total_score = db.Column(db.Float, nullable=False)
+
+    grade = db.Column(db.String(2), nullable=True)
+
+    
+
+    uploaded_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    
+
+    # Relationships
+
+    student = db.relationship('Student', back_populates='results')
+
+    lecturer = db.relationship('Lecturer', back_populates='results')
+
+    
+
+    def __repr__(self):
+
+        return f"<Result {self.reg_number} - {self.course_code}>"

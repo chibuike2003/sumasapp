@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>My Students | SUMAS Lecturer Portal</title>
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    <nav class="bg-white border-b p-4 px-8 flex justify-between items-center no-print">
+        <h1 class="text-xl font-bold text-blue-600">SUMAS Lecturer Portal</h1>
+        <a href="{{ url_for('lecturer_dashboard') }}" class="text-sm text-gray-600 hover:text-blue-600">Back to Dashboard</a>
+    </nav>
+
+    <main class="max-w-7xl mx-auto p-8">
+        <div class="flex justify-between items-center mb-8 no-print">
+            <h1 class="text-3xl font-bold text-gray-900">Students Registered for My Courses</h1>
+            <button onclick="window.print()" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-black transition">
+                Print List
+            </button>
+        </div>
+
+        <div class="mb-6 no-print">
+            <input type="text" id="searchInput" placeholder="Search by name, reg number, or course..." 
+                   onkeyup="filterTable()"
+                   class="w-full md:w-1/3 border rounded-lg p-3 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
+            <table id="studentsTable" class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-100 text-gray-700">
+                        <th class="p-4 border-b">Student Name</th>
+                        <th class="p-4 border-b">Registration Number</th>
+                        <th class="p-4 border-b">Course Code</th>
+                        <th class="p-4 border-b">Course Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reg in registrations %}
+                    <tr class="hover:bg-gray-50 transition border-b">
+                        <td class="p-4">{{ reg.student.name }}</td>
+                        <td class="p-4">{{ reg.student.reg_number }}</td>
+                        <td class="p-4 font-mono text-blue-600">{{ reg.course.course_code }}</td>
+                        <td class="p-4">{{ reg.course.course_title }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="p-8 text-center text-gray-500 italic">
+                            No students registered for your courses yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById("studentsTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                const rowText = tr[i].innerText.toLowerCase();
+                tr[i].style.display = rowText.includes(filter) ? "" : "none";
+            }
+        }
+    </script>
+</body>
+</html>

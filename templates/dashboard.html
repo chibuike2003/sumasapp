@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUMAS Portal | Student Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex relative overflow-x-hidden">
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebarOverlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden lg:hidden transition-opacity duration-300 opacity-0"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebarMenu" class="w-64 bg-slate-900 text-slate-300 flex-shrink-0 fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:flex flex-col justify-between border-r border-slate-800">
+        <div>
+            <!-- Sidebar Header / Logo -->
+            <div class="h-20 flex items-center justify-between px-6 bg-slate-950 border-b border-slate-800/60">
+                <div class="flex items-center gap-3">
+                    <div class="bg-gradient-to-br from-blue-600 to-teal-500 text-white p-2 rounded-lg shadow">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold text-white block tracking-wide">SUMAS</span>
+                        <span class="text-xs text-teal-400 font-medium uppercase tracking-wider">Student Hub</span>
+                    </div>
+                </div>
+                <button id="closeSidebarBtn" type="button" class="lg:hidden text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Profile Overview Snapshot (Dynamic) -->
+            <div class="p-4 mx-3 my-4 bg-slate-800/40 rounded-xl border border-slate-800 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow shadow-blue-500/20 uppercase">
+                    {{ session['student_name'][:2] if session.get('student_name') else 'ST' }}
+                </div>
+                <div class="truncate">
+                    <span class="block text-sm font-semibold text-white truncate">{{ student.name }}</span>
+                    <span class="block text-xs text-slate-400 truncate uppercase">{{ student.reg_number }}</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="px-3 space-y-1">
+                <button id="navDashboardBtn" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl bg-blue-700 text-white transition shadow-sm text-left">
+                    <i class="fa-solid fa-chart-pie text-base"></i>
+                    <span>Dashboard</span>
+                </button>
+                <!-- NEW: Check Result Navigation Link -->
+                <a href="{{ url_for('view_my_results') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-slate-800 hover:text-white transition group text-slate-400">
+                    <i class="fa-solid fa-square-poll-vertical text-base group-hover:text-teal-400 transition"></i>
+                    <span>Check Result</span>
+                </a>
+                <a href="{{ url_for('search_courses') }}" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-slate-800 hover:text-white transition group text-slate-400">
+                    <i class="fa-solid fa-book-bookmark text-base group-hover:text-teal-400 transition"></i>
+                    <span>Course Registration</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-slate-800 hover:text-white transition group text-slate-400">
+                    <i class="fa-solid fa-user-gear text-base group-hover:text-teal-400 transition"></i>
+                    <span>Account Profile</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-950/40 text-xs flex items-center justify-between text-slate-500">
+            <span>Session: 2025/2026</span>
+            <span class="flex items-center gap-1.5 text-emerald-500 font-medium">
+                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Portal Live
+            </span>
+        </div>
+    </aside>
+
+    <!-- Main Workspace Content Layout Wrapper -->
+    <div class="flex-grow flex flex-col min-h-screen overflow-x-hidden">
+        
+        <!-- Workspace Top Header bar -->
+        <header class="bg-white h-20 shadow-sm border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button id="hamburgerMenuBtn" type="button" class="lg:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg hover:bg-slate-100 transition">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div>
+                    <h1 id="workspaceTitle" class="text-lg sm:text-xl font-bold text-slate-900">Student Workspace</h1>
+                    <p class="text-xs text-slate-500 hidden sm:block">Enugu State University of Medical and Applied Sciences</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                 <a href="{{ url_for('chat') }}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition border border-transparent hover:border-rose-100">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Chat with AI</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition border border-transparent hover:border-rose-100">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Logout</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Dynamic Content Workspace -->
+        <main class="flex-grow p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl w-full mx-auto">
+            
+            <!-- System Flash Notification Messaging Banner -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-4 rounded-xl {% if category == 'error' %}bg-rose-50 text-rose-700 border-rose-100{% else %}bg-emerald-50 text-emerald-700 border-emerald-100{% endif %} border text-sm font-medium flex items-center gap-2 animate-pulse">
+                            <i class="fa-solid {% if category == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %}"></i> {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- ========================================== -->
+            <!-- VIEW VIEWPORT SECTION 1: CORE DASHBOARD     -->
+            <!-- ========================================== -->
+            <div id="dashboardSection" class="space-y-6">
+                <!-- Context Welcome Header Announcement Banner card -->
+                <div class="bg-gradient-to-r from-blue-900 via-blue-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="relative z-10 space-y-3">
+                        <div class="flex flex-wrap gap-2 items-center">
+                           <span class="px-2.5 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-md font-bold tracking-wide uppercase border border-blue-500/30">
+    {% if student.academic_scope %}{{ student.academic_scope.faculty }}{% else %}Unassigned Faculty{% endif %}
+</span>
+
+{% if student.academic_scope and student.academic_scope.department %}
+<span class="px-2.5 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-md font-bold tracking-wide uppercase border border-teal-500/30">
+    {{ student.academic_scope.department }}
+</span>
+{% endif %}
+                        </div>
+                        
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Welcome back, {{ session['student_name'] }}!</h2>
+                        <p class="text-sm text-slate-300 max-w-xl leading-relaxed">
+                            Manage your academic workflows below. If your structural department coordinates change, update your deployment keys immediately.
+                        </p>
+                        
+                        <!-- Trigger button to pop open the modern department modal layout -->
+                        <div class="pt-2">
+                            <button id="openModalBtn" type="button" class="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-semibold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-lg transition duration-200 transform active:scale-95">
+                                <i class="fa-solid fa-building-columns"></i> Set Faculty & Department
+                            </button>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-university text-9xl absolute -right-4 -bottom-6 text-white/5 pointer-events-none transform -rotate-12 hidden md:block"></i>
+                </div>
+
+                <!-- Strategic Metrics Analytics Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between group">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Current CGPA</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 block"><a href="{{ url_for('student_cgpa') }}" class="nav-link">
+    View My CGPA
+</a></span>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shadow-inner group-hover:bg-amber-500 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-award"></i></div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between group">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Academic Level</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 block">
+                                
+                                <a href="{{ url_for('student_last_course_level') }}" class="nav-link">
+    View Last Course Level
+</a>
+                                <span class="text-sm font-medium text-slate-400 ml-0.5">L</span></span>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shadow-inner group-hover:bg-blue-600 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between group">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Registered Units</span>
+                            <span class="text-2xl sm:text-3xl font-extrabold text-slate-900 block"> <a href="{{ url_for('student_total_units') }}" class="nav-link">
+    View Total Units
+</a>
+<span class="text-sm font-medium text-slate-400 ml-0.5"> </span></span>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shadow-inner group-hover:bg-teal-600 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-calendar-check"></i></div>
+                    </div>
+                            
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between group">
+                        <div class="space-y-1">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">Fees Clearance</span>
+                            <span class="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md inline-block border border-emerald-100 mt-1">100% Cleared</span>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300"><i class="fa-solid fa-circle-check"></i></div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Split Workflows Container Layout -->
+                <div class="grid lg:grid-cols-3 gap-6 items-start">
+    
+                    
+
+
+<div class="dashboard-container">
+    <h2>Welcome, {{ student.name }}</h2>
+
+    {% for (session, level, semester), courses in grouped_regs.items() %}
+    <div class="card mb-4">
+        <div class="card-header bg-light p-3 border-bottom">
+            <h4 class="m-0">
+                {{ session }} Session | 
+                <span class="badge bg-primary">Level {{ level }}</span> | 
+                <span class="badge bg-secondary">Semester {{ semester }}</span>
+            </h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover w-100">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Code</th>
+                        <th>Course Title</th>
+                        <th class="text-center">Units</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in courses %}
+                    <tr>
+                        <td class="fw-bold">{{ entry.course.course_code }}</td>
+                        <td>{{ entry.course.course_title }}</td>
+                        <td class="text-center">{{ entry.course.unit_load }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You have no registered courses for the current sessions.
+    </div>
+    {% endfor %}
+</div>
+
+                    
+
+<!-- Right Smaller Column: Secure Profile Update Form Panel -->
+                    <div id="profile-settings" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200/80 space-y-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-user-slider text-blue-700"></i> Profile & Access Settings
+                            </h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Keep your account details secure.</p>
+                        </div>
+                        <hr class="border-slate-100">
+                        <form action="{{ url_for('update_profile') }}" method="POST" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"><i class="fa-solid fa-lock text-slate-400"></i> Registration Number</label>
+                                <input type="text" value="{{ student.reg_number }}" readonly disabled class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-100 text-slate-400 font-mono text-sm cursor-not-allowed select-none">
+                            </div>
+                            <div>
+                                <label for="name" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Full Name</label>
+                                <input id="name" name="name" type="text" required value="{{ student.name }}" class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700/10 focus:border-blue-700 transition">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Email Address</label>
+                                <input id="email" name="email" type="email" required value="{{ student.email }}" class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700/10 focus:border-blue-700 transition">
+                            </div>
+                            <div>
+                                <label for="new_password" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Change Password</label>
+                                <input id="new_password" name="new_password" type="password" minlength="8" class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50/50 text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-700/10 focus:border-blue-700 transition" placeholder="••••••••">
+                            </div>
+                            <button type="submit" class="w-full py-2.5 rounded-xl shadow-md text-sm font-semibold text-white bg-blue-700 hover:bg-blue-800 transition">Save Profile Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- VIEW VIEWPORT SECTION 2: NEW VIEW RESULT   -->
+            <!-- ========================================== -->
+            <div id="resultsSection" class="space-y-6 hidden">
+                <!-- Academic Transcript Heading Banner -->
+                <div class="bg-gradient-to-r from-slate-800 via-slate-900 to-blue-950 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+                    <div class="relative z-10 space-y-2">
+                        <span class="px-2.5 py-1 bg-teal-500/20 text-teal-300 text-xs rounded-md font-bold tracking-wide uppercase border border-teal-500/30">Academic Transcript Ledger</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Statement of Results</h2>
+                        <p class="text-sm text-slate-300 max-w-xl leading-relaxed">
+                            Review cumulative scoring matrices verified across institutional faculties below.
+                        </p>
+                    </div>
+                    <i class="fa-solid fa-square-poll-vertical text-9xl absolute -right-4 -bottom-6 text-white/5 pointer-events-none transform rotate-12 hidden md:block"></i>
+                </div>
+
+                <!-- Comprehensive Results Data Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between bg-slate-50/50">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">Score Metrics Breakdown</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Verified Institutional Session Performance</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="window.print()" class="inline-flex items-center gap-2 bg-slate-100 border border-slate-200 hover:bg-slate-200 text-slate-700 font-semibold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-sm transition">
+                                <i class="fa-solid fa-print"></i> Print Transcript
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-400 bg-slate-50/30 uppercase text-xxs tracking-wider font-semibold">
+                                    <th class="py-3 px-6">Course Code</th>
+                                    <th class="py-3 px-6">Course Description</th>
+                                    <th class="py-3 px-4 text-center">Units</th>
+                                    <th class="py-3 px-4 text-center">Score</th>
+                                    <th class="py-3 px-4 text-center">Grade</th>
+                                    <th class="py-3 px-4 text-center">Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                                <tr class="hover:bg-slate-50/60 transition">
+                                    <td class="py-4 px-6 font-bold text-blue-950">CSC 321</td>
+                                    <td class="py-4 px-6 text-slate-600">Web Application Architectures & Frameworks</td>
+                                    <td class="py-4 px-4 text-center font-semibold">3</td>
+                                    <td class="py-4 px-4 text-center">84</td>
+                                    <td class="py-4 px-4 text-center"><span class="px-2.5 py-1 text-xs font-bold rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">A</span></td>
+                                    <td class="py-4 px-4 text-center text-emerald-600 font-semibold">Excellent</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60 transition">
+                                    <td class="py-4 px-6 font-bold text-blue-950">PAD 305</td>
+                                    <td class="py-4 px-6 text-slate-600">Elements of Public Administrative Law</td>
+                                    <td class="py-4 px-4 text-center font-semibold">3</td>
+                                    <td class="py-4 px-4 text-center">76</td>
+                                    <td class="py-4 px-4 text-center"><span class="px-2.5 py-1 text-xs font-bold rounded-md bg-emerald-50 text-emerald-700 border border-emerald-100">A</span></td>
+                                    <td class="py-4 px-4 text-center text-emerald-600 font-semibold">Excellent</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50/60 transition">
+                                    <td class="py-4 px-6 font-bold text-blue-950">MTH 311</td>
+                                    <td class="py-4 px-6 text-slate-600">Advanced Numerical Computations</td>
+                                    <td class="py-4 px-4 text-center font-semibold">3</td>
+                                    <td class="py-4 px-4 text-center">63</td>
+                                    <td class="py-4 px-4 text-center"><span class="px-2.5 py-1 text-xs font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-100">B</span></td>
+                                    <td class="py-4 px-4 text-center text-blue-600 font-semibold">Very Good</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+        <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-400 mt-12">&copy; 2026 SUMAS Portal Ecosystem.</footer>
+    </div>
+
+
+    <!-- ======================================================== -->
+    <!-- MODAL COMPONENT: FACULTY & DEPARTMENT CONFIGURATOR LAYER -->
+    <!-- ======================================================== -->
+    <div id="academicModal" class="fixed inset-0 z-50 overflow-y-auto hidden flex items-center justify-center p-4">
+        <!-- Backdrop Fade Overlay -->
+        <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/60 transition-opacity duration-300 opacity-0"></div>
+
+        <!-- Structural Content Container Layout Box Box -->
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 transform transition-all duration-300 scale-95 opacity-0 relative z-10 space-y-4">
+            
+            <!-- Modal Header Segment -->
+            <div class="flex justify-between items-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-lg border border-teal-100">
+                        <i class="fa-solid fa-hotel"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900">Academic Mapping</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Configure institutional placement coordinates.</p>
+                    </div>
+                </div>
+                <button id="closeModalBtn" type="button" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-50 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <hr class="border-slate-100">
+
+            <!-- Data Post Form Pipe -->
+            <form action="{{ url_for('update_academic_scope') }}" method="POST" class="space-y-4">
+                
+                <!-- Faculty Dropdown Selection Box -->
+                <div>
+                    <label for="modalFaculty" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Select Faculty</label>
+                    <select id="modalFaculty" name="faculty" required
+                        class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 transition cursor-pointer appearance-none">
+                        <option value="" disabled selected>Choose Faculty node...</option>
+                        <option value="Applied Sciences">Faculty of Applied Sciences</option>
+                        <option value="Clinical Pharmacy">Faculty of Clinical Pharmacy</option>
+                        <option value="Engineering Systems">Faculty of Engineering Systems</option>
+                    </select>
+                </div>
+
+                <!-- Dependent Department Dropdown Selection Box -->
+                <div>
+                    <label for="modalDepartment" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">Select Department</label>
+                    <select id="modalDepartment" name="department" required disabled
+                        class="block w-full px-3.5 py-2.5 border border-slate-200 rounded-xl bg-slate-100 text-slate-400 text-sm focus:outline-none transition cursor-not-allowed appearance-none">
+                        <option value="" disabled selected>Select Faculty first...</option>
+                    </select>
+                </div>
+
+                <!-- Action Button Footers Row -->
+                <div class="flex gap-3 pt-2">
+                    <button id="cancelModalBtn" type="button" class="w-1/2 py-2.5 border border-slate-200 rounded-xl text-slate-600 text-sm font-semibold bg-white hover:bg-slate-50 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 rounded-xl text-white text-sm font-bold bg-teal-600 hover:bg-teal-700 shadow-md shadow-teal-700/20 transition">
+                        Save Assignment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JavaScript Interactions Logic Controllers -->
+    <script>
+        // 1. Core Drawer Sidebar Selectors
+        const hamburgerMenuBtn = document.getElementById('hamburgerMenuBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        hamburgerMenuBtn?.addEventListener('click', () => {
+            sidebarMenu.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+            setTimeout(() => sidebarOverlay.classList.add('opacity-100'), 10);
+        });
+        [closeSidebarBtn, sidebarOverlay].forEach(btn => btn?.addEventListener('click', () => {
+            sidebarMenu.classList.add('-translate-x-full');
+            sidebarOverlay.classList.remove('opacity-100');
+            setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+        }));
+
+        // 2. Academic Modal Toggle Controller Script Hook Elements
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const academicModal = document.getElementById('academicModal');
+        const modalBackdrop = document.getElementById('modalBackdrop');
+        const modalBox = academicModal.querySelector('.max-w-md');
+
+        function toggleModalVisibility(show) {
+            if (show) {
+                academicModal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalBackdrop.classList.remove('opacity-0');
+                    modalBox.classList.remove('scale-95', 'opacity-0');
+                }, 10);
+            } else {
+                modalBackdrop.classList.add('opacity-0');
+                modalBox.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => academicModal.classList.add('hidden'), 300);
+            }
+        }
+
+        openModalBtn.addEventListener('click', () => toggleModalVisibility(true));
+        [closeModalBtn, cancelModalBtn, modalBackdrop].forEach(el => el.addEventListener('click', () => toggleModalVisibility(false)));
+
+        // 3. Dynamic Cascade Data Matrix for Faculty -> Departments Lists
+        const departmentDataMatrix = {
+            "Applied Sciences": ["Computer Science & Tech", "Public Administration", "Mathematics & Statistics"],
+            "Clinical Pharmacy": ["Pharmacology & Toxicology", "Clinical Pharmacy Desk", "Pharmaceutics Systems"],
+            "Engineering Systems": ["Software Engineering Node", "Electronic & Comm Engineering", "Mechanical Infrastructure"]
+        };
+
+        const modalFaculty = document.getElementById('modalFaculty');
+        const modalDepartment = document.getElementById('modalDepartment');
+
+        modalFaculty.addEventListener('change', (e) => {
+            const chosenFaculty = e.target.value;
+            const targetDepts = departmentDataMatrix[chosenFaculty] || [];
+
+            // Reset, activate styling transformations onto dependent drop-down list fields
+            modalDepartment.innerHTML = '<option value="" disabled selected>Choose Department sub-node...</option>';
+            modalDepartment.disabled = false;
+            modalDepartment.classList.remove('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            modalDepartment.classList.add('bg-slate-50', 'text-slate-800', 'cursor-pointer');
+
+            // Inject the matching options
+            targetDepts.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept;
+                opt.textContent = dept;
+                modalDepartment.appendChild(opt);
+            });
+        });
+
+        // 4. Tab View Switcher (Dashboard vs Results Screen Layout Views)
+        const navDashboardBtn = document.getElementById('navDashboardBtn');
+        const navResultsBtn = document.getElementById('navResultsBtn');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const resultsSection = document.getElementById('resultsSection');
+        const workspaceTitle = document.getElementById('workspaceTitle');
+
+        function activateSection(target) {
+            if (target === 'dashboard') {
+                // Show/Hide Sections
+                dashboardSection.classList.remove('hidden');
+                resultsSection.classList.add('hidden');
+                workspaceTitle.textContent = "Student Workspace";
+                
+                // Style Active Link
+                navDashboardBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl bg-blue-700 text-white transition shadow-sm text-left";
+                navResultsBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-slate-800 hover:text-white transition group text-slate-400 text-left";
+            } else if (target === 'results') {
+                // Show/Hide Sections
+                dashboardSection.classList.add('hidden');
+                resultsSection.classList.remove('hidden');
+                workspaceTitle.textContent = "Academic Ledger Workspace";
+
+                // Style Active Link
+                navResultsBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl bg-blue-700 text-white transition shadow-sm text-left";
+                navDashboardBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl hover:bg-slate-800 hover:text-white transition group text-slate-400 text-left";
+            }
+            
+            // Auto-close sidebar drawer on mobile viewport after action selection
+            if (window.innerWidth < 1024) {
+                sidebarMenu.classList.add('-translate-x-full');
+                sidebarOverlay.classList.remove('opacity-100');
+                setTimeout(() => sidebarOverlay.classList.add('hidden'), 300);
+            }
+        }
+
+        navDashboardBtn.addEventListener('click', () => activateSection('dashboard'));
+        navResultsBtn.addEventListener('click', () => activateSection('results'));
+    </script>
+</body>
+</html>

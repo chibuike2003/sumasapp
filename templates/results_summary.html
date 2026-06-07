@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Progress - Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="#">Student Academic Portal</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2 class="mb-3">Academic Progress</h2>
+        
+        <div class="alert alert-primary shadow-sm border-0">
+            <h4 class="mb-0">Current CGPA: <strong>{{ cgpa }}</strong></h4>
+        </div>
+
+        {% for (year, semester), items in semester_data.items() %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-secondary text-white fw-bold">
+                {{ year }} - {{ semester }}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Course</th>
+                            <th>Grade</th>
+                            <th>Units</th>
+                            <th>GP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.code }}</td>
+                            <td>{{ item.grade }}</td>
+                            <td>{{ item.units }}</td>
+                            <td>{{ item.gp }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">No academic results found for this student.</div>
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

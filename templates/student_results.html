@@ -1,0 +1,52 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Results</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .no-results { color: #888; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>My Academic Results</h1>
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Session</th>
+                <th>Semester</th>
+                <th>CA</th>
+                <th>Exam</th>
+                <th>Total</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+            <tr>
+                <td>{{ result.course_code }}</td>
+                <td>{{ result.course_title }}</td>
+                <td>{{ result.session_written }}</td>
+                <td>{{ result.semester }}</td>
+                <td>{{ result.ca_score }}</td>
+                <td>{{ result.exam_score }}</td>
+                <td>{{ result.total_score }}</td>
+                <td>{{ result.grade }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="no-results">No results have been uploaded for your profile yet.</p>
+    {% endif %}
+</body>
+</html>
